@@ -1,0 +1,95 @@
+<!doctype html> {%load staticfiles%}
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Find世界</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/default.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search-form.css'%}">
+    <script type="text/javascript" src="{%static 'js/jquery-3.2.1.min.js'%}"></script>
+</head>
+<style type="text/css">
+.comments {
+    width: 95%;
+    /*自动适应父布局宽度*/
+    height: 400px;
+    overflow: auto;
+    word-break: break-all;
+    /*在ie中解决断行问题(防止自动变为在一行显示，主要解决ie兼容问题，ie8中当设宽度为100%时，文本域类容超过一行时，  
+当我们双击文本内容就会自动变为一行显示，所以只能用ie的专有断行属性“word-break或word-wrap”控制其断行)*/
+}
+</style>
+
+<body>
+    <form onsubmit="submitFn(this, event);">
+        <div class="search-wrapper">
+            <div class="input-holder">
+                <input type="text" class="search-input" placeholder="Search words !" />
+                <button class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
+            </div>
+            <span class="close" onclick="searchToggle(this, event);"></span>
+            <div class="result-container">
+                <span></span>
+            </div>
+            <div id='s_result' class="comments">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+    </div>
+</body>
+<script type="text/javascript">
+function searchToggle(obj, evt) {
+    var container = $(obj).closest('.search-wrapper');
+
+    if (!container.hasClass('active')) {
+        container.addClass('active');
+        evt.preventDefault();
+    } else if (container.hasClass('active') && $(obj).closest('.input-holder').length == 0) {
+        container.removeClass('active');
+        // clear input
+        container.find('.search-input').val('');
+        // clear and hide result container when we press close
+        container.find('.result-container').fadeOut(100, function() {
+            $(this).empty();
+        });
+    }
+}
+
+// function submitFn(obj, evt) {
+//     value = $(obj).find('.search-input').val().trim();
+//     console.log(value)
+//     _html = "Yup yup! Your search text sounds like this: ";
+//     if (!value.length) {
+//         _html = "Yup yup! Add some text friend :D";
+//     } else {
+//         _html += "<b>" + value + "</b>";
+//     }
+
+//     $(obj).find('.result-container').html('<span>' + _html + '</span>');
+//     $(obj).find('.result-container').fadeIn(100);
+
+//     evt.preventDefault();
+// }
+
+
+function submitFn(obj, evt) {
+    value = $(obj).find('.search-input').val().trim();
+    var url = '/find/result';
+    var word = value
+    console.log(word)
+    $.get(
+        url, {
+            word: word
+        },
+        function(data) {
+            $('#s_result').html(data);
+        }
+    );
+    evt.preventDefault();
+}
+</script>
+
+</html>
