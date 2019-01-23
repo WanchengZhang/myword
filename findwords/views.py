@@ -52,7 +52,10 @@ def search_string(filename,string):
 def get_process_files(root_dir):
     """process all files in directory"""
     cur_dir=os.path.abspath(root_dir)
-    file_list=os.listdir(cur_dir)
+    file_list = []
+    for file in os.listdir(cur_dir):
+        u_file = file.decode('gbk')
+        file_list.append(u_file)
     logging.info(file_list)
     process_list=[]
     for file in file_list:
