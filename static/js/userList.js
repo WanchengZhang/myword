@@ -92,6 +92,22 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
         return false;
     });
 
+    // 修改搜索目录
+    form.on("submit(dir_btn)", function(data) {
+        $.ajax({
+            url: "rootdir",
+            type: "post",
+            data: {"change_dir":1},
+            success: function(data) {
+                layer.msg(data);
+            },
+            error: function(res) {
+                console.log(res);
+            },
+        });
+        return false;
+    });
+
     //详细
     function lookResult(look) {
         // document.getElementById("#maj").style.display= "";

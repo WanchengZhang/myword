@@ -7,4 +7,5 @@ urlpatterns = [
 	url(r'^result$', views.result, name='result'),
 	url(r'^searchwords$', views.searchwords, name='searchwords'),
 	url(r'^searesult$', views.searesult, name='searesult'),
+	url(r'^rootdir$', views.rootdir, name='rootdir'),
 ]

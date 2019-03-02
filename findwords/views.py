@@ -5,6 +5,8 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from docx import Document
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QWidget
 import os,sys,datetime
 import logging
 import json
@@ -41,7 +43,7 @@ def search_string(filename,string):
         # print i
         if i.find(string)!=-1:
             changetime = datetime.datetime.fromtimestamp(os.path.getmtime(filename)).strftime('%Y-%m-%d %H:%M:%S')
-            logging.info(changetime)
+            # logging.info(changetime)
             # print filename, i
             fword = filename+">>>>>"+changetime+">>>>>"+i
             fileword.append(fword)
@@ -56,7 +58,7 @@ def get_process_files(root_dir):
     for file in os.listdir(cur_dir):
         u_file = file.decode('gbk')
         file_list.append(u_file)
-    logging.info(file_list)
+    # logging.info(file_list)
     process_list=[]
     for file in file_list:
         fullfile=cur_dir+"\\"+file
@@ -72,7 +74,7 @@ def get_process_files(root_dir):
 
 def count_files(root_dir,string):
     process_list=get_process_files(root_dir)
-    logging.info(process_list)
+    # logging.info(process_list)
     f_result = []
     for files in process_list:
         f_result.append(search_string(files, string))
@@ -94,7 +96,7 @@ def result(requset):
             try:
                 # logging.info("yyyyyyyyyyyyyyyyyyyyyyy")
                 f_result = count_files(root_dir,string)
-                logging.info(f_result)
+                # logging.info(f_result)
                 return render(requset, 'findwords/f_result.html', {"f_result": f_result})
             except:
                 pass
@@ -111,7 +113,33 @@ def searchwords(request):
     #     }]
     return render(request, 'findwords/findwords.html', locals())
 
-@csrf_exempt
+#获取文件夹目录
+class DirWindow(QWidget):
+    def __init__(self):
+        super(DirWindow, self).__init__()
+        self.filedir = QFileDialog.getExistingDirectory(self, "选择文件夹", "/")
+    
+    def displayDir(self):
+       return(self.filedir)  # 返回文件夹路径
+
+#修改记载文件夹目录的配置文件dir.txt
+#@csrf_exempt
+def rootdir(request):
+    re = {"fail":"修改失败！"}
+    logging.info(re)
+    try:
+        change_dir = request.POST.get('change_dir')
+        app = QtWidgets.QApplication(sys.argv)
+        file = DirWindow()
+        dirtxt = file.displayDir()
+        with open("dir.txt","w") as f:
+            f.write(dirtxt)
+        re = {"succes":"修改成功！"}
+        return HttpResponse(re, content_type="application/json")
+    except:
+        return HttpResponse(re, content_type="application/json")
+
+# @csrf_exempt
 def searesult(request):
     logging.info("ffffffffffffffffffffffffff")
     # json_data = [{
@@ -123,12 +151,17 @@ def searesult(request):
     if request.method == 'POST':
         try:
             word = request.POST.get('keyword')
-            logging.info(word)
-            root_dir="..\\words" #目录
+            # logging.info(word)
+            with open("dir.txt", "r") as f:
+                data = f.readline()
+            logging.info(data.replace(r"/",r"\\"))
+            lastdir = data.replace(r"/",r"\\")
+            root_dir = lastdir #目录
+            # root_dir="..\\words" #目录
             string = word #要搜索的字符串
             try:
                 f_result = count_files(root_dir,string)
-                logging.info(f_result)
+                # logging.info(f_result)
                 f_result_list = []
                 for result in f_result:
                     for res in result:
@@ -136,7 +169,7 @@ def searesult(request):
                         result_dict = {"filename":result_list[0],"checktime":result_list[1],"contents":result_list[2]}
                         # logging.info(result_dict)
                         f_result_list.append(result_dict)
-                logging.info(f_result_list)
+                # logging.info(f_result_list)
                 json_data = json.dumps(f_result_list, cls=DateEncoder, ensure_ascii=False)
                 return HttpResponse(json_data, content_type="application/json")
             except:

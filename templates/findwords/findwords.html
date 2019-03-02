@@ -16,6 +16,7 @@
 
 <body class="childrenBody">
     <form class="layui-form">
+        <!-- {% csrf_token %} -->
         <br>
         <blockquote class="layui-elem-quote quoteBox">
             <div class="layui-row">
@@ -33,7 +34,8 @@
                             <div class="layui-col-md3">
                                 <!-- <a class="layui-btn search_btn" type="button" data-type="reload" lay-submit="" id="search_btn" lay-filter="search_btn">搜索</a> -->
                                 <button class="layui-btn" lay-submit lay-filter="search_btn" id="search_btn">搜索</button>
-                                <a class="layui-btn layui-btn-normal dir_btn" type="button" >目录</a>
+                                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="dir_btn" id="dir_btn">目录</button>
+                                <!-- <a class="layui-btn layui-btn-normal dir_btn" type="button" >目录</a> -->
                             </div>
                         </div>
                     </form>
@@ -103,7 +105,7 @@
     //     }
     // };
     var json_data = {{ json_data | safe }};
-    console.log(json_data);
+    // console.log(json_data);
     </script>
 </body>
 
