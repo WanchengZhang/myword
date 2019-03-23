@@ -41,6 +41,9 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
 
     // 关键字搜索
     form.on("submit(search_btn)", function(data) {
+        var click_count = parseInt($("#click_count").text()) + 1;
+        console.log(click_count);
+        $("#click_count").text(new String(click_count));
         var keyword = data.field.keyword;
         var post_data = data.field;
         console.log(post_data);
@@ -50,7 +53,8 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
             data: post_data,
             success: function(data) {
                 var newjson = data;
-                console.log(newjson);
+                var searchtext = $('#keyword').val();;
+                console.log(searchtext);
                 // tableIns.reload();
                 table.render({
                     elem: '#userList',
@@ -84,6 +88,16 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
                         ]
                     ]
                 });
+                //1.获取要高亮显示的行
+                var rowNode = $('.laytable-cell-'+new String(click_count)+'-contents');
+                // console.log(rowNode);
+                //2.遍历整行内容，添加高亮颜色
+                rowNode.each(function() {
+                    var word = $(this).html();
+                    // console.log(word);
+                    word = word.replace(searchtext, '<span style="color:red;">' + searchtext + '</span>');
+                    $(this).html(word);
+                });
             },
             error: function(res) {
                 console.log(res);
@@ -97,7 +111,7 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
         $.ajax({
             url: "rootdir",
             type: "post",
-            data: {"change_dir":1},
+            data: { "change_dir": 1 },
             success: function(data) {
                 layer.msg(data);
             },
@@ -120,19 +134,24 @@ layui.use(['form', 'layer', 'table', 'laytpl'], function() {
             content: $('#lookResult'),
             success: function(layero, index) {
                 // var body = layui.layer.getChildFrame('body', index);
+                var searchtext = $('#keyword').val();
                 var body = $('#lookResult');
                 if (look) {
                     body.find("#logsort").val(look.filename);
                     body.find("#lookedate").val(look.checktime);
-                    body.find("#pcloudcontent").val(look.contents);
+                    body.find("#pcloudcontent").html(look.contents);
                     // form.render('select', 'selFilter');
                     form.render();
-                }
+                };
                 setTimeout(function() {
                     layui.layer.tips('点击此处返回日志列表', '.layui-layer-setwin .layui-layer-close', {
                         tips: 3
                     });
-                }, 500)
+                }, 500);
+                var word = $('#pcloudcontent').html();
+                console.log(word);
+                word = word.replace(searchtext, '<span style="color:red;">' + searchtext + '</span>');
+                $('#pcloudcontent').html(word);
             }
         })
         // layui.layer.full(index);

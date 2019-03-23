@@ -13,6 +13,26 @@
     <link rel="stylesheet" type="text/css" href="{% static 'layui/css/layui.css' %}" media="all" />
     <link rel="stylesheet" href="{% static 'css/public.css' %}" media="all" />
 </head>
+<style type="text/css">
+.kw {
+    background: #f00;
+    color: #fff;
+}
+
+#dvPop {
+    position: absolute;
+    display: none;
+    border: solid 0px #000;
+    background: #fff;
+    overflow: auto;
+    font-size: 13px;
+}
+
+#dvPop .close {
+    text-align: right;
+    color: blue
+}
+</style>
 
 <body class="childrenBody">
     <form class="layui-form">
@@ -75,10 +95,11 @@
             </div> -->
             <div class="layui-form-item layui-row layui-col-xs12">
                 <label class="layui-form-label">搜索结果：</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入日志内容" style="min-height: 170px;" class="layui-textarea userDesc" name="pcloudcontent" id="pcloudcontent" readonly></textarea>
+                <div class="layui-input-block" id="pcloudcontent">
+                    <!-- <textarea placeholder="请输入日志内容" style="min-height: 170px;" class="layui-textarea userDesc" name="pcloudcontent" id="pcloudcontent" readonly></textarea> -->
                 </div>
             </div>
+            <div id="click_count" class="layui-tab-item layui-hide">1</div>
             <!-- <div class="layui-form-item layui-row layui-col-xs12">
                 <div class="layui-input-block">
                     <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="addlog">立即添加</button>
